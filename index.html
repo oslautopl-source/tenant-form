@@ -402,6 +402,8 @@
     <div class="reg-id"><span data-i18n="regIdPrefix">Reg ID</span> <span id="regIdVal"></span></div>
     <p class="ok-note" data-i18n="successNote">Your details and photos have been saved successfully. Please keep the Registration ID above.</p>
     <button type="button" class="btn" id="againBtn" data-i18n="againBtn">Register Another Tenant</button>
+    <button type="button" class="btn-ghost" id="pdfBtn" data-i18n="pdfBtn">📄 Download / Print Registration (PDF)</button>
+    <p class="ok-note" data-i18n="pdfHint">In the print window, choose “Save as PDF” as destination to download the PDF copy of the form.</p>
   </div>
 
   <footer>
@@ -495,6 +497,12 @@ const I18N = {
     successTitle: "Registration Complete!", regIdPrefix: "Reg ID",
     successNote: "Your details and photos have been saved successfully. Please keep the Registration ID above.",
     successNoteNoId: "Your details and photos have been submitted successfully. Thank you!",
+    errDuplicateMobile: "This mobile number is already registered (",
+    pdfBtn: "📄 Download / Print Registration (PDF)",
+    pdfHint: "In the print window, choose “Save as PDF” as destination to download the PDF copy of the form.",
+    popupBlock: "Please allow pop-ups for this site, then press the PDF button again.",
+    sigTenant: "Signature — Tenant (Name)",
+    sigLandlord: "Signature — Landlord",
     againBtn: "Register Another Tenant",
     footer1: "🔒 Your information is private — all data is saved to the landlord's designated Google Drive.",
     footer2: "If you have any problems, please contact the landlord.",
@@ -587,6 +595,12 @@ const I18N = {
     successTitle: "पंजीकरण पूर्ण!", regIdPrefix: "Reg ID",
     successNote: "आपकी जानकारी और फोटो सफलतापूर्वक सहेजी गईं। कृपया ऊपर दिया Registration ID रखें।",
     successNoteNoId: "आपकी जानकारी और फोटो सफलतापूर्वक सबमिट हो गई हैं। धन्यवाद!",
+    errDuplicateMobile: "यह मोबाइल नंबर पहले से पंजीकृत है (",
+    pdfBtn: "📄 रजिस्ट्रेशन (PDF) डाउनलोड / प्रिंट करें",
+    pdfHint: "प्रिंट विंडो में “Save as PDF” चुनकर फॉर्म की PDF कॉपी डाउनलोड करें।",
+    popupBlock: "इस साइट के लिए pop-ups allow करें, फिर PDF बटन दोबारा दबाएँ।",
+    sigTenant: "हस्ताक्षर — किरायेदार (नाम)",
+    sigLandlord: "हस्ताक्षर — मकान मालिक",
     againBtn: "दूसरे किरायेदार का पंजीकरण करें",
     footer1: "🔒 आपकी जानकारी निजी है — सारा डेटा मालिक के निर्दिष्ट Google Drive में सहेजा जाता है।",
     footer2: "कोई समस्या हो तो मालिक से संपर्क करें।",
@@ -739,6 +753,12 @@ const I18N = {
     regIdPrefix: "নিবন্ধন নম্বর",
     successNote: "আপনার তথ্য আর ছবি সফলভাবে সংরক্ষিত হয়েছে। উপরের নিবন্ধন নম্বরটা রাখুন।",
     successNoteNoId: "আপনার তথ্য ও ছবি সফলভাবে জমা হয়েছে। ধন্যবাদ!",
+    errDuplicateMobile: "এই মোবাইল নম্বরটি আগেই নিবন্ধিত আছে (",
+    pdfBtn: "📄 নিবন্ধন (PDF) ডাউনলোড / প্রিন্ট করুন",
+    pdfHint: "প্রিন্ট উইন্ডোতে “Save as PDF” বাছাই করে ফর্মের PDF কপি ডাউনলোড করুন।",
+    popupBlock: "এই সাইটের জন্য pop-ups অনুমতি দিন, তারপর PDF বাটনে আবার চাপুন।",
+    sigTenant: "হস্তাক্ষর — ভাড়াটিয়া (নাম)",
+    sigLandlord: "হস্তাক্ষর — ঘরমালিক",
     againBtn: "আরেকজন ভাড়াটিয়ার নিবন্ধন করুন",
     footer1: "🔒 আপনার তথ্য গোপনীয় — সব তথ্য ঘরমালিকের নির্ধারিত Google Drive-এ সংরক্ষণ হয়।",
     footer2: "কোনো সমস্যা হলে ঘরমালিকের সাথে যোগাযোগ করুন।",
@@ -836,7 +856,23 @@ function compressImage(file, maxDim, quality) {
           w = Math.max(1, Math.round(w * s)); h = Math.max(1, Math.round(h * s));
           const c = document.createElement('canvas');
           c.width = w; c.height = h;
-          c.getContext('2d').drawImage(img, 0, 0, w, h);
+          const ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          /* upload date+time watermark (nerer corner e) — photo thekei jano photo ta kon somoy upload hoyeche */
+          try {
+            const now = new Date();
+            const p2 = n => (n < 10 ? '0' + n : '' + n);
+            const stamp = 'Uploaded: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes());
+            const fs = Math.max(16, Math.round(w * 0.028));
+            ctx.font = 'bold ' + fs + 'px Arial, sans-serif';
+            const tw = ctx.measureText(stamp).width;
+            const px = Math.round(fs * 0.45);
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(w - tw - px * 2, h - fs - px, tw + px * 2, fs + px * 1.4);
+            ctx.fillStyle = '#ffffff';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(stamp, w - tw - px, h - Math.round(px * 0.4));
+          } catch (wmErr) { /* watermark fail hole o image save hobe */ }
           URL.revokeObjectURL(url);
           c.toBlob(b => {
             if (!b) { fileToDataUrl(file).then(res); return; }
@@ -956,6 +992,10 @@ $('dob').max = new Date().toISOString().slice(0,10);
 
 /* ---------- co-occupants (room e 1 er beshi jon thakle) ---------- */
 const coPhotoData = {};
+
+/* last successful submission — PDF generate er jonno */
+let lastRegId = '';
+let lastPayload = null;
 
 function buildCoOccCard(i) {
   const div = document.createElement('div');
@@ -1169,8 +1209,17 @@ $('tenantForm').addEventListener('submit', e => {
   /* text/plain body = "simple request", tai kono browser block kore na */
   const finish = () => { busy = false; btn.disabled = false; btn.textContent = t().submitBtn; };
   const done = res => {
-    if (res && res.ok) showSuccess(res.regId);
-    else showErr(t().saveFailed + ((res && res.error) || '—'));
+    if (res && res.ok) {
+      lastRegId = res.regId || '';
+      lastPayload = payload;
+      showSuccess(res.regId);
+    } else if (res && res.code === 'DUPLICATE_MOBILE') {
+      /* same mobile number age theke registered — field + toast e sothik msg */
+      setErr($('mobile'), 'errDuplicateMobile');
+      showErr(t().errDuplicateMobile + (res.error || '') + ')');
+    } else {
+      showErr(t().saveFailed + ((res && res.error) || '—'));
+    }
     finish();
   };
   const fail = err => { showErr(t().networkErr + err + ')'); finish(); };
@@ -1180,13 +1229,13 @@ $('tenantForm').addEventListener('submit', e => {
                      FORM_ENDPOINT.indexOf('{{') === -1;
 
   if (endpointOk) {
-    /* Primary route: direct POST to web app URL (server template e set hoy) */
+    /* Direct POST to web app URL */
     fetch(FORM_ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
       .then(r => r.json())
       .then(done)
       .catch(() => {
-        /* Response read hote pare na (CORS/redirect block) — kintu server data peye save kore feleche.
-           Page load hoye thakle network alive, tai POST delivered. Optimistic success, Reg ID chara. */
+        /* Response read hote pare (CORS/redirect) — kintu server data peye save kore feleche
+           (verified: github.io route theke data sheet+Drive e save hocche). Optimistic success, Reg ID chara. */
         showSuccess('');
         finish();
       });
@@ -1219,6 +1268,121 @@ function showSuccess(regId) {
   window.scrollTo({ top: 0 });
 }
 
+/* ---------- PDF (print window) — full details + photos + house rules + legal acknowledgement ---------- */
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function buildPdfHtml() {
+  const d = lastPayload || {};
+  const dict = t();
+  const occ = d.occupation || '';
+  const orgLabel = $('orgLabel') ? $('orgLabel').textContent : (dict.orgOther || 'Organisation');
+  const relName = r => {
+    const k = 'rel' + String(r || '').replace(/^./, x => x.toUpperCase());
+    return dict[k] || r || '';
+  };
+
+  const kv = (label, val) => (val === 0 || val ? '<tr><td class="k">' + escHtml(label) + '</td><td>' + escHtml(val) + '</td></tr>' : '');
+
+  /* photos (already watermarked with upload time) */
+  const photoFigs = [];
+  [['selfie', dict.selfieLabel], ['aadhaarPhoto', dict.aadhaarPhotoLabel], ['profId', dict.profIdLabel]].forEach(pair => {
+    if (imgData[pair[0]]) photoFigs.push('<figure><img src="' + imgData[pair[0]] + '"><figcaption>' + escHtml(pair[1]) + '</figcaption></figure>');
+  });
+
+  /* co-occupants */
+  const coList = d.coOccupants || [];
+  let coHtml = '';
+  if (coList.length) {
+    const rows = coList.map(c =>
+      '<tr><td>' + escHtml(c.personNo) + '</td><td>' + escHtml(c.name) + '</td><td>' + escHtml(c.fatherName) + '</td><td>' + escHtml(c.dob) + '</td><td>' + escHtml(c.mobile) + '</td><td>' + escHtml(c.aadhaar) + '</td><td>' + escHtml(relName(c.relation)) + '</td></tr>'
+    ).join('');
+    const coPhotos = coList.map(c => coPhotoData[c.personNo]
+      ? '<figure><img src="' + coPhotoData[c.personNo] + '"><figcaption>' + escHtml(dict.coPerson + ' ' + c.personNo + (c.name ? ' — ' + c.name : '')) + '</figcaption></figure>'
+      : '').join('');
+    coHtml = '<h2>' + escHtml(dict.coSectionTitle) + '</h2>' +
+      '<table class="co"><tr><th>#</th><th>' + escHtml(dict.coNameLabel) + '</th><th>' + escHtml(dict.coFatherLabel) + '</th><th>' + escHtml(dict.coDobLabel) + '</th><th>' + escHtml(dict.coMobileLabel) + '</th><th>' + escHtml(dict.coAadhaarLabel) + '</th><th>' + escHtml(dict.coRelationLabel) + '</th></tr>' + rows + '</table>' +
+      (coPhotos ? '<div class="photos">' + coPhotos + '</div>' : '');
+  }
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>' + escHtml(dict.docTitle) + (lastRegId ? ' — ' + escHtml(lastRegId) : '') + '</title><style>' +
+    '@page { size:A4; margin:13mm; }' +
+    'body { font-family:Arial,"Noto Sans","Noto Sans Bengali","Noto Sans Devanagari",sans-serif; color:#111; font-size:12.5px; line-height:1.55; margin:0; }' +
+    '.hd { border-bottom:3px solid #1e5bd6; padding-bottom:10px; margin-bottom:14px; }' +
+    '.hd h1 { font-size:20px; margin:0; color:#1e5bd6; }' +
+    '.hd .sub { color:#444; margin-top:3px; font-size:12px; }' +
+    '.reg { display:inline-block; background:#ecfdf5; border:1.5px solid #065f46; color:#065f46; font-weight:700; padding:4px 14px; border-radius:8px; margin-top:8px; font-size:14px; letter-spacing:.5px; }' +
+    'h2 { font-size:14.5px; color:#1e5bd6; border-bottom:1.5px solid #c7d2e8; padding-bottom:3px; margin:18px 0 8px; }' +
+    'table.kv { width:100%; border-collapse:collapse; }' +
+    'table.kv td { padding:4.5px 7px; border:1px solid #d5dae3; vertical-align:top; }' +
+    'table.kv td.k { width:36%; background:#f4f7fb; font-weight:600; }' +
+    'table.co { width:100%; border-collapse:collapse; margin:6px 0; }' +
+    'table.co th, table.co td { border:1px solid #d5dae3; padding:4px 6px; text-align:left; font-size:11.5px; }' +
+    'table.co th { background:#f4f7fb; }' +
+    '.photos { display:flex; flex-wrap:wrap; gap:12px; margin:10px 0; }' +
+    '.photos figure { margin:0; text-align:center; }' +
+    '.photos img { max-width:190px; max-height:230px; border:1px solid #ccc; border-radius:6px; }' +
+    '.photos figcaption { font-size:10.5px; color:#555; margin-top:3px; max-width:190px; }' +
+    '.pre { white-space:pre-line; background:#f8fafc; border:1px solid #dde3ec; border-radius:8px; padding:10px 12px; font-size:11.5px; line-height:1.6; }' +
+    '.sig { display:flex; justify-content:space-between; margin-top:44px; }' +
+    '.sig div { width:44%; text-align:center; font-size:12px; }' +
+    '.sig .line { border-top:1.5px solid #333; margin-top:56px; padding-top:5px; }' +
+    '.ft { margin-top:22px; padding-top:8px; border-top:1px solid #ccc; color:#777; font-size:10.5px; text-align:center; }' +
+    '</style></head><body>' +
+    '<div class="hd"><h1>' + escHtml(dict.headerTitle) + '</h1><div class="sub">' + escHtml(dict.headerSub) + ' — ' + escHtml(dateStr) + '</div>' +
+    (lastRegId ? '<div class="reg">' + escHtml(dict.regIdPrefix) + ': ' + escHtml(lastRegId) + '</div>' : '') + '</div>' +
+
+    '<h2>1. ' + escHtml(dict.sec1) + '</h2><table class="kv">' +
+    kv(dict.nameLabel, d.name) + kv(dict.fatherLabel, d.fatherName) + kv(dict.dobLabel, d.dob) + kv(dict.mobileLabel, d.mobile) +
+    kv(dict.emailLabel, d.email) + kv(dict.addressLabel, d.address) + kv(dict.permLabel, d.permAddress) +
+    '</table>' +
+
+    '<h2>' + escHtml(dict.occupationLabel) + '</h2><table class="kv">' +
+    kv(dict.occupationLabel, dict['occ' + occ.replace(/^./, x => x.toUpperCase())] || occ) +
+    kv(orgLabel, d.orgName) +
+    '</table>' +
+
+    '<h2>' + escHtml(dict.sec2) + '</h2><table class="kv">' +
+    kv(dict.aadhaarLabel, d.aadhaar) + kv(dict.panLabel, d.pan) + kv(dict.voterLabel, d.voterId) + kv(dict.otherIdLabel, d.otherId) +
+    '</table>' + (photoFigs.length ? '<div class="photos">' + photoFigs.join('') + '</div>' : '') +
+
+    '<h2>' + escHtml(dict.sec4) + '</h2><table class="kv">' +
+    kv(dict.roomLabel, d.room) + kv(dict.rentLabel, d.rent) + kv(dict.advanceLabel, d.advance) + kv(dict.depositLabel, d.deposit) +
+    kv(dict.moveInLabel, d.moveIn) + kv(dict.leaseLabel, d.leaseMonths) + kv(dict.occRoomLabel, d.occupants) +
+    '</table>' + coHtml +
+
+    '<h2>' + escHtml(dict.sec5) + '</h2><table class="kv">' +
+    kv(dict.gNameLabel, d.gName) + kv(dict.gMobileLabel, d.gMobile) + kv(dict.gAddressLabel, d.gAddress) + kv(dict.gRelationLabel, d.gRelation) +
+    '</table>' +
+
+    '<h2>' + escHtml(dict.sec6) + '</h2><table class="kv">' +
+    kv(dict.eNameLabel, d.eName) + kv(dict.eMobileLabel, d.eMobile) + kv(dict.eRelationLabel, relName(d.eRelation)) +
+    '</table>' +
+
+    '<h2>' + escHtml(dict.houseRulesTitle) + '</h2><div class="pre">' + escHtml(dict.houseRules) + '</div>' +
+
+    '<h2>' + escHtml(dict.legalTitle) + '</h2><div class="pre">' + escHtml(dict.legalText) + '</div>' +
+
+    '<div class="sig"><div><div class="line">' + escHtml(dict.sigTenant) + '</div></div><div><div class="line">' + escHtml(dict.sigLandlord) + '</div></div></div>' +
+
+    '<div class="ft">' + escHtml(dict.footer1) + ' — ' + escHtml(dateStr) + '</div>' +
+    '</body></html>';
+}
+
+$('pdfBtn').addEventListener('click', () => {
+  const w = window.open('', '_blank');
+  if (!w) { showErr(t().popupBlock); return; }
+  w.document.open();
+  w.document.write(buildPdfHtml());
+  w.document.close();
+  w.focus();
+  setTimeout(() => { try { w.print(); } catch (e) {} }, 700);
+});
+
 function resetAll() {
   $('tenantForm').reset();
   IMG_FIELDS.forEach(id => { delete imgData[id]; delete fileName[id]; updatePreview(id); });
@@ -1245,7 +1409,7 @@ $('clearBtn').addEventListener('click', () => {
 renderCoOcc();
 applyLang(currentLang);
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3deccd2ee132a99',t:'MTc4OTg4NjAyMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 -- init ---------- */
 applyLang(currentLang);
