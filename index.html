@@ -504,6 +504,7 @@ const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwwudi5tqE1nSFjz6
 /* ================= TRANSLATIONS (English / Hindi / Bengali) ================= */
 const I18N = {
   en: {
+    errSameMobile:"This number is already used for another person in this form. Please enter a different number.",
     sigTitle:"Tenant Signature",sigSub:"Sign with your finger inside the box",sigClear:"Clear signature",errSignature:"Signature is required",
     docTitle: "Room Rental — Tenant Registration",
     headerTitle: "🏠 Room Rental — Tenant Registration",
@@ -626,6 +627,7 @@ const I18N = {
     clearConfirm: "All entered data will be deleted. Continue?"
   },
   hi: {
+    errSameMobile:"यह नंबर फॉर्म में किसी अन्य व्यक्ति के लिए पहले से दिया गया है। कृपया दूसरा नंबर भरें।",
     sigTitle:"किरायेदार के हस्ताक्षर",sigSub:"बॉक्स के अंदर उंगली से हस्ताक्षर करें",sigClear:"हस्ताक्षर मिटाएँ",errSignature:"हस्ताक्षर ज़रूरी है",
     docTitle: "रूम किराया — किरायेदार पंजीकरण",
     headerTitle: "🏠 रूम किराया — किरायेदार पंजीकरण",
@@ -748,6 +750,7 @@ const I18N = {
     clearConfirm: "भरी गई सभी डेटा मिट जाएगी। आगे बढ़ें?"
   },
   bn: {
+    errSameMobile:"এই নম্বরটি ফর্মে অন্য একজনের জন্য আগেই দেওয়া হয়েছে। অন্য একটি নম্বর দিন।",
     sigTitle:"ভাড়াটিয়ার স্বাক্ষর",sigSub:"বাক্সের ভেতরে আঙুল দিয়ে সই করুন",sigClear:"স্বাক্ষর মুছুন",errSignature:"স্বাক্ষর আবশ্যক",
     docTitle: "ঘরের ভাড়া — ভাড়াটিয়া নিবন্ধন",
     headerTitle: "🏠 ঘরের ভাড়া — ভাড়াটিয়া নিবন্ধন",
@@ -1289,6 +1292,13 @@ function validate() {
   if (!v('eName')) setFieldErr('eName', 'errEName');
   if (!/^[6-9]\d{9}$/.test(v('eMobile'))) setFieldErr('eMobile', 'errEMobile');
   if (!v('eRelation')) setFieldErr('eRelation', 'errERelation');
+  /* Tenant / Guarantor / Emergency: same mobile number cholbe na */
+  const dupChk = (id, others) => {
+    if ($(id).closest('.field').classList.contains('error')) return;
+    if (v(id) && others.some(o => v(o) === v(id))) setFieldErr(id, 'errSameMobile');
+  };
+  dupChk('gMobile', ['mobile']);
+  dupChk('eMobile', ['mobile', 'gMobile']);
   /* co-occupants: room e 1 er beshi jon thakle tader full details mandatory */
   const occN = parseInt(v('occupants'), 10) || 1;
   if (occN >= 2) {
@@ -1472,7 +1482,7 @@ function buildPdfHtml() {
   const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
  
   return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>' + escHtml(dict.docTitle) + (lastRegId ? ' — ' + escHtml(lastRegId) : '') + '</title><style>' +
-    '@page { size:A4; margin:13mm; }' +
+    '@page { size:A4; margin:5mm; }' +
     'body { font-family:Arial,"Noto Sans","Noto Sans Bengali","Noto Sans Devanagari",sans-serif; color:#111; font-size:12.5px; line-height:1.55; margin:0; }' +
     '.hd { border-bottom:3px solid #1e5bd6; padding-bottom:10px; margin-bottom:14px; }' +
     '.hd h1 { font-size:20px; margin:0; color:#1e5bd6; }' +
