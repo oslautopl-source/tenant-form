@@ -29,6 +29,13 @@
     width:100%; padding:11px 12px; font-size:16px; border:1.5px solid var(--line); border-radius:10px; background:#fbfcfe; color:var(--text); }
   input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(30,91,214,.13); background:#fff; }
   .field { margin-bottom:2px; }
+  .landlord-box { background:linear-gradient(135deg,#eff6ff,#f8fbff); border:1.5px solid #bfd3fb; border-radius:12px; padding:12px 14px; margin:8px 0 14px; }
+  .landlord-box h3 { margin:0 0 6px; color:var(--blue-dark); font-size:15px; }
+  .landlord-box p { margin:3px 0; font-size:13px; line-height:1.45; }
+  .landlord-box .landlord-name { font-weight:800; font-size:15px; }
+  textarea { width:100%; min-height:82px; resize:vertical; padding:11px 12px; font-size:16px; border:1.5px solid var(--line); border-radius:10px; background:#fbfcfe; color:var(--text); font-family:inherit; }
+  textarea:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(30,91,214,.13); background:#fff; }
+  .file-hint { color:var(--muted); font-size:12px; margin:5px 0 0; }
   .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
   @media (max-width:480px){ .grid2 { grid-template-columns:1fr; } }
   .err-msg { display:none; color:var(--red); font-size:12px; margin-top:4px; }
@@ -69,28 +76,34 @@
       <button type="button" class="lang-btn" data-lang="bn">বাংলা</button>
     </div>
   </header>
-
+ 
+  <div class="landlord-box" aria-label="Landlord details">
+    <h3 data-i18n="landlordTitle">🏠 Landlord Details</h3>
+    <p class="landlord-name" data-i18n="landlordName">Name: Nitai Mondal</p>
+    <p data-i18n="landlordAddress">Address: Baikunthu Pally, ITI Road, Near Bottle Company More, Siliguri, Jalpaiguri, West Bengal, India - 734001</p>
+  </div>
+ 
   <div id="toast"></div>
-
+ 
   <form id="tenantForm" novalidate>
-
+ 
     <!-- ================= 1. PERSONAL ================= -->
     <div class="card">
       <h2><span class="badge">1</span> <span data-i18n="sec1">Personal Information</span></h2>
       <p class="sub" data-i18n="sec1sub">Please enter your correct details</p>
-
+ 
       <div class="field">
         <label class="f" for="name"><span data-i18n="nameLabel">Full Name</span> <span class="req">*</span></label>
         <input type="text" id="name" name="name" placeholder="As per Aadhaar card" data-i18n-ph="namePh" autocomplete="name">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="fatherName"><span data-i18n="fatherLabel">Father / Husband Name</span> <span class="req">*</span></label>
         <input type="text" id="fatherName" name="fatherName" placeholder="e.g., Bishnu Das" data-i18n-ph="fatherPh">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="grid2">
         <div class="field">
           <label class="f" for="dob"><span data-i18n="dobLabel">Date of Birth</span> <span class="req">*</span></label>
@@ -103,31 +116,31 @@
           <div class="err-msg"></div>
         </div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="email"><span data-i18n="emailLabel">Email (Optional)</span></label>
         <input type="email" id="email" name="email" placeholder="your@email.com" data-i18n-ph="emailPh" autocomplete="email">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="address"><span data-i18n="addressLabel">Current Address</span> <span class="req">*</span></label>
         <input type="text" id="address" name="address" placeholder="Write your full address" data-i18n-ph="addressPh" autocomplete="street-address">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="permAddress"><span data-i18n="permLabel">Permanent Address (Optional)</span></label>
         <input type="text" id="permAddress" name="permAddress" placeholder="If different from current" data-i18n-ph="permPh">
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <!-- ================= 2. PROFESSIONAL ================= -->
     <div class="card">
       <h2><span class="badge">2</span> <span data-i18n="secProf">Professional Information</span></h2>
       <p class="sub" data-i18n="secProfSub">Your profession and organisation</p>
-
+ 
       <div class="field">
         <label class="f" for="occupation"><span data-i18n="occupationLabel">Your Profession</span> <span class="req">*</span></label>
         <select id="occupation" name="occupation">
@@ -142,13 +155,13 @@
         </select>
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field" id="orgRow" style="display:none">
         <label class="f" for="orgName"><span id="orgLabel">Organisation / Details</span> <span class="req">*</span></label>
         <input type="text" id="orgName" name="orgName" data-i18n-ph="orgPh" placeholder="Full name of the organisation">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field" id="field-profId">
         <label class="f"><span data-i18n="profIdLabel">Profession ID Card Photo</span> <span id="tag-profId">(Optional)</span><span class="req" id="req-profId" style="display:none"> *</span></label>
         <p class="sub" style="margin-left:0" data-i18n="profIdNote">Student ID / Office ID / Business License</p>
@@ -162,29 +175,41 @@
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <!-- ================= 3. KYC ================= -->
     <div class="card">
       <h2><span class="badge">3</span> <span data-i18n="sec2">KYC Documents</span></h2>
       <p class="sub" id="kycSub">Aadhaar, PAN &amp; Voter ID required.</p>
-
+ 
       <div class="field">
         <label class="f" for="aadhaar"><span data-i18n="aadhaarLabel">Aadhaar Number</span> <span class="req">*</span></label>
         <input type="tel" id="aadhaar" name="aadhaar" inputmode="numeric" maxlength="14" placeholder="12 digit Aadhaar Number" data-i18n-ph="aadhaarPh">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
-        <label class="f"><span data-i18n="aadhaarPhotoLabel">Aadhaar Card Photo (Optional)</span></label>
-        <label class="file-btn" for="aadhaarPhoto"><span data-i18n="aadhaarPhotoBtn">📄 Select Aadhaar photo</span></label>
-        <input type="file" id="aadhaarPhoto" accept="image/*" hidden>
-        <div class="photo-row" id="row-aadhaarPhoto">
-          <img id="img-aadhaarPhoto" alt="Aadhaar preview">
+        <label class="f"><span data-i18n="aadhaarPhotoLabel">KYC / Aadhaar Front Photo</span> <span class="req">*</span></label>
+        <label class="file-btn" for="aadhaarFront"><span data-i18n="aadhaarFrontBtn">📄 Select Front photo</span></label>
+        <input type="file" id="aadhaarFront" accept="image/*" hidden>
+        <div class="photo-row" id="row-aadhaarFront">
+          <img id="img-aadhaarFront" alt="KYC front preview">
           <span class="photo-name"></span>
-          <button type="button" class="btn-x" data-clear="aadhaarPhoto" title="Remove">✕</button>
+          <button type="button" class="btn-x" data-clear="aadhaarFront" title="Remove">✕</button>
         </div>
       </div>
-
+ 
+      <div class="field">
+        <label class="f"><span data-i18n="aadhaarBackLabel">KYC / Aadhaar Back Photo</span> <span class="req">*</span></label>
+        <label class="file-btn" for="aadhaarBack"><span data-i18n="aadhaarBackBtn">📄 Select Back photo</span></label>
+        <input type="file" id="aadhaarBack" accept="image/*" hidden>
+        <div class="photo-row" id="row-aadhaarBack">
+          <img id="img-aadhaarBack" alt="KYC back preview">
+          <span class="photo-name"></span>
+          <button type="button" class="btn-x" data-clear="aadhaarBack" title="Remove">✕</button>
+        </div>
+        <p class="file-hint" data-i18n="kycPhotoHint">Front and back images are required. JPG/PNG only.</p>
+      </div>
+ 
       <div class="grid2">
         <div class="field">
           <label class="f" for="pan"><span data-i18n="panLabel">PAN Number</span> <span id="tag-pan">(Optional)</span><span class="req" id="req-pan" style="display:none"> *</span></label>
@@ -197,19 +222,19 @@
           <div class="err-msg"></div>
         </div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="otherId"><span data-i18n="otherIdLabel">Other ID (Optional)</span></label>
         <input type="text" id="otherId" name="otherId" placeholder="Driving License / Passport — type and number" data-i18n-ph="otherIdPh">
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <!-- ================= 3. SELFIE ================= -->
     <div class="card">
       <h2><span class="badge">4</span> <span data-i18n="sec3">Your Selfie</span></h2>
       <p class="sub" data-i18n="sec3sub">Take a clear front-facing photo with the front camera</p>
-
+ 
       <div class="field" id="field-selfie">
         <label class="f"><span data-i18n="selfieLabel">Selfie Photo</span> <span class="req">*</span></label>
         <label class="file-btn" for="selfie"><span data-i18n="selfieBtn">📷 Open camera / select photo</span></label>
@@ -222,12 +247,12 @@
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <!-- ================= 4. ROOM ================= -->
     <div class="card">
       <h2><span class="badge">5</span> <span data-i18n="sec4">Room &amp; Rent</span></h2>
       <p class="sub" data-i18n="sec4sub">Details of the room you are taking</p>
-
+ 
       <div class="grid2">
         <div class="field">
           <label class="f" for="room"><span data-i18n="roomLabel">Room Number</span> <span class="req">*</span></label>
@@ -240,7 +265,7 @@
           <div class="err-msg"></div>
         </div>
       </div>
-
+ 
       <div class="grid2">
         <div class="field">
           <label class="f" for="advance"><span data-i18n="advanceLabel">Advance Paid (₹) — Optional</span></label>
@@ -253,7 +278,7 @@
           <div class="err-msg"></div>
         </div>
       </div>
-
+ 
       <div class="grid2">
         <div class="field">
           <label class="f" for="moveIn"><span data-i18n="moveInLabel">Move-in Date</span> <span class="req">*</span></label>
@@ -266,7 +291,51 @@
           <div class="err-msg"></div>
         </div>
       </div>
-
+ 
+      <div class="grid2">
+        <div class="field">
+          <label class="f" for="rentDueDate"><span data-i18n="rentDueDateLabel">Rent Due Date</span> <span class="req">*</span></label>
+          <input type="date" id="rentDueDate" name="rentDueDate">
+          <div class="err-msg"></div>
+        </div>
+        <div class="field">
+          <label class="f" for="waterCharges"><span data-i18n="waterChargesLabel">Water Charges (₹)</span></label>
+          <input type="number" id="waterCharges" name="waterCharges" inputmode="numeric" min="0" step="1" placeholder="0">
+          <div class="err-msg"></div>
+        </div>
+      </div>
+ 
+      <div class="grid2">
+        <div class="field">
+          <label class="f" for="electricityCharges"><span data-i18n="electricityChargesLabel">Electricity Charges (₹)</span></label>
+          <input type="number" id="electricityCharges" name="electricityCharges" inputmode="numeric" min="0" step="1" placeholder="0">
+          <div class="err-msg"></div>
+        </div>
+        <div class="field">
+          <label class="f" for="lateFee"><span data-i18n="lateFeeLabel">Late Fee (₹)</span></label>
+          <input type="number" id="lateFee" name="lateFee" inputmode="numeric" min="0" step="1" placeholder="0">
+          <div class="err-msg"></div>
+        </div>
+      </div>
+ 
+      <div class="grid2">
+        <div class="field">
+          <label class="f" for="paymentStatus"><span data-i18n="paymentStatusLabel">Payment Status</span></label>
+          <select id="paymentStatus" name="paymentStatus">
+            <option value="pending" data-i18n="paymentPending">Pending</option>
+            <option value="paid" data-i18n="paymentPaid">Paid</option>
+            <option value="partial" data-i18n="paymentPartial">Partially Paid</option>
+            <option value="overdue" data-i18n="paymentOverdue">Overdue</option>
+          </select>
+          <div class="err-msg"></div>
+        </div>
+        <div class="field">
+          <label class="f" for="rentNotes"><span data-i18n="rentNotesLabel">Rent Notes</span></label>
+          <textarea id="rentNotes" name="rentNotes" placeholder="Any rent/payment notes" data-i18n-ph="rentNotesPh"></textarea>
+          <div class="err-msg"></div>
+        </div>
+      </div>
+ 
       <div class="field">
         <label class="f" for="occupants"><span data-i18n="occRoomLabel">How many people will stay in the room?</span> <span class="req">*</span></label>
         <select id="occupants" name="occupants">
@@ -280,49 +349,49 @@
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <div id="coOccWrap"></div>
-
+ 
     <!-- ================= 5. GUARANTOR ================= -->
     <div class="card">
       <h2><span class="badge">6</span> <span data-i18n="sec5">Guarantor / Local Guardian</span></h2>
       <p class="sub" data-i18n="sec5sub">Correct details of the guarantor or local guardian</p>
-
+ 
       <div class="field">
         <label class="f" for="gName"><span data-i18n="gNameLabel">Guarantor / Local Guardian Name</span> <span class="req">*</span></label>
         <input type="text" id="gName" name="gName" placeholder="Full name" data-i18n-ph="gNamePh">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="gMobile"><span data-i18n="gMobileLabel">Guarantor / Local Guardian Mobile</span> <span class="req">*</span></label>
         <input type="tel" id="gMobile" name="gMobile" inputmode="numeric" maxlength="10" placeholder="10 digit mobile" data-i18n-ph="gMobilePh">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="gAddress"><span data-i18n="gAddressLabel">Guarantor / Local Guardian Address (Optional)</span></label>
         <input type="text" id="gAddress" name="gAddress" placeholder="Full address" data-i18n-ph="gAddressPh">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="field">
         <label class="f" for="gRelation"><span data-i18n="gRelationLabel">Relation (Optional)</span></label>
         <input type="text" id="gRelation" name="gRelation" placeholder="e.g., Relative / Neighbour / Landlord" data-i18n-ph="gRelationPh">
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <!-- ================= 6. EMERGENCY ================= -->
     <div class="card">
       <h2><span class="badge">7</span> <span data-i18n="sec6">Emergency Contact</span></h2>
-
+ 
       <div class="field">
         <label class="f" for="eName"><span data-i18n="eNameLabel">Name</span> <span class="req">*</span></label>
         <input type="text" id="eName" name="eName" placeholder="Full name" data-i18n-ph="eNamePh">
         <div class="err-msg"></div>
       </div>
-
+ 
       <div class="grid2">
         <div class="field">
           <label class="f" for="eMobile"><span data-i18n="eMobileLabel">Mobile Number</span> <span class="req">*</span></label>
@@ -347,7 +416,7 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- ================= 8. ACKNOWLEDGEMENT & CONSENT ================= -->
     <div class="card">
       <h2><span class="badge">8</span> <span data-i18n="secAck">Legal Acknowledgement &amp; Consent</span></h2>
@@ -370,17 +439,17 @@
 14. Emergency vacating: If any complaint or objection arises from the neighbourhood or society regarding the tenant, the landlord may ask the tenant to vacate the room on an emergency basis.</div>
         <label class="f" style="margin-top:12px"><span data-i18n="legalTitle">Legal Acknowledgement (as per Indian law)</span></label>
         <div class="legal-box" data-i18n="legalText">TENANT ACKNOWLEDGEMENT &amp; CONSENT (As per Indian law)
-
+ 
 1. I hereby declare that all the information, documents and photos submitted in this form are true, correct and genuine. I understand that submitting false information or forged documents may attract criminal action under the Bharatiya Nyaya Sanhita, 2023 (including offences of cheating and forgery), and may result in termination of my tenancy.
-
+ 
 2. My identity, including my Aadhaar number, is being collected only for the purpose of identity verification in connection with this tenancy, as permitted under Section 7 of the Aadhaar (Targeted Delivery of Funds and Benefits) Act, 2016.
-
+ 
 3. In accordance with the Digital Personal Data Protection Act, 2023, I give my explicit consent for the landlord to collect, store and process my personal data (including personal information, KYC documents and photographs) in the landlord's private Google Drive and Google Spreadsheet for the purpose of managing this tenancy.
-
+ 
 4. I understand that my data will not be shared with any third party without my prior consent, and that I may withdraw my consent at any time as provided under the Digital Personal Data Protection Act, 2023.
-
+ 
 5. I agree to comply with the house rules, the rent and other terms agreed with the landlord. This acknowledgement forms part of my tenancy agreement under the Indian Contract Act, 1872, and the rent control law applicable in the State of West Bengal.
-
+ 
 6. My electronic submission of this form shall be deemed a valid electronic record under the Information Technology Act, 2000.</div>
         <div class="consent-box">
           <input type="checkbox" id="consent">
@@ -389,12 +458,12 @@
         <div class="err-msg"></div>
       </div>
     </div>
-
+ 
     <button type="submit" class="btn" id="submitBtn" data-i18n="submitBtn">Submit — Save Data ✓</button>
     <button type="button" class="btn-ghost" id="clearBtn" data-i18n="clearBtn">Clear Form</button>
-
+ 
   </form>
-
+ 
   <!-- ================= SUCCESS ================= -->
   <div id="successCard">
     <div class="big">✅</div>
@@ -405,13 +474,13 @@
     <button type="button" class="btn-ghost" id="pdfBtn" data-i18n="pdfBtn">📄 Download / Print Registration (PDF)</button>
     <p class="ok-note" data-i18n="pdfHint">In the print window, choose “Save as PDF” as destination to download the PDF copy of the form.</p>
   </div>
-
+ 
   <footer>
     <span data-i18n="footer1">🔒 Your information is private — all data is saved to the landlord's designated Google Drive.</span><br>
     <span data-i18n="footer2">If you have any problems, please contact the landlord.</span>
   </footer>
 </div>
-
+ 
 <script>
 /* ============================================================
    SETUP: ekhane apnar Google Apps Script er "Web App URL"
@@ -419,7 +488,7 @@
    Link kothay pawa jabe — SETUP_GUIDE.md file ta dekhen.
    ============================================================ */
 const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwwudi5tqE1nSFjz6esRhjli6m2scOF6mpB7bpJ0w45gWGPLKFB7Vx0crFAWdJ6Ij2CFw/exec";
-
+ 
 /* ================= TRANSLATIONS (English / Hindi / Bengali) ================= */
 const I18N = {
   en: {
@@ -444,6 +513,29 @@ const I18N = {
     sec4: "Room & Rent", sec4sub: "Details of the room you are taking",
     roomLabel: "Room Number", roomPh: "e.g., 102",
     rentLabel: "Monthly Rent (₹)", rentPh: "e.g., 5000",
+     landlordTitle: "🏠 Landlord Details",
+     landlordName: "Name: Nitai Mondal",
+     landlordAddress: "Address: Baikunthu Pally, ITI Road, Near Bottle Company More, Siliguri, Jalpaiguri, West Bengal, India - 734001",
+     aadhaarFrontLabel: "KYC / Aadhaar Front Photo",
+     aadhaarBackLabel: "KYC / Aadhaar Back Photo",
+     aadhaarFrontBtn: "📄 Select Front photo",
+     aadhaarBackBtn: "📄 Select Back photo",
+     kycPhotoHint: "Front and back images are required. JPG/PNG only.",
+     rentDueDateLabel: "Rent Due Date",
+     waterChargesLabel: "Water Charges (₹)",
+     electricityChargesLabel: "Electricity Charges (₹)",
+     lateFeeLabel: "Late Fee (₹)",
+     paymentStatusLabel: "Payment Status",
+     paymentPending: "Pending",
+     paymentPaid: "Paid",
+     paymentPartial: "Partially Paid",
+     paymentOverdue: "Overdue",
+     rentNotesLabel: "Rent Notes",
+     rentNotesPh: "Any rent/payment notes",
+     errKycFront: "KYC front photo is required",
+     errKycBack: "KYC back photo is required",
+     errRentDueDate: "Please select the rent due date",
+ 
     advanceLabel: "Advance Paid (₹) — Optional",
     depositLabel: "Security Deposit (₹) — Optional",
     moveInLabel: "Move-in Date", leaseLabel: "Lease Period (months) — Optional", leasePh: "e.g., 12",
@@ -542,6 +634,29 @@ const I18N = {
     sec4: "रूम और किराया", sec4sub: "जो रूम ले रहे हैं, उसके विवरण",
     roomLabel: "रूम नंबर", roomPh: "जैसे: 102",
     rentLabel: "मासिक किराया (₹)", rentPh: "जैसे: 5000",
+     landlordTitle: "🏠 मकान मालिक का विवरण",
+     landlordName: "नाम: Nitai Mondal",
+     landlordAddress: "पता: Baikunthu Pally, ITI Road, Near Bottle Company More, Siliguri, Jalpaiguri, West Bengal, India - 734001",
+     aadhaarFrontLabel: "KYC / Aadhaar फ्रंट फोटो",
+     aadhaarBackLabel: "KYC / Aadhaar बैक फोटो",
+     aadhaarFrontBtn: "📄 फ्रंट फोटो चुनें",
+     aadhaarBackBtn: "📄 बैक फोटो चुनें",
+     kycPhotoHint: "फ्रंट और बैक फोटो आवश्यक हैं। केवल JPG/PNG।",
+     rentDueDateLabel: "किराया देय तिथि",
+     waterChargesLabel: "पानी शुल्क (₹)",
+     electricityChargesLabel: "बिजली शुल्क (₹)",
+     lateFeeLabel: "विलंब शुल्क (₹)",
+     paymentStatusLabel: "भुगतान स्थिति",
+     paymentPending: "लंबित",
+     paymentPaid: "भुगतान किया गया",
+     paymentPartial: "आंशिक भुगतान",
+     paymentOverdue: "बकाया",
+     rentNotesLabel: "किराया नोट्स",
+     rentNotesPh: "किराया/भुगतान से संबंधित नोट्स",
+     errKycFront: "KYC फ्रंट फोटो आवश्यक है",
+     errKycBack: "KYC बैक फोटो आवश्यक है",
+     errRentDueDate: "किराया देय तिथि चुनें",
+ 
     advanceLabel: "अग्रिम राशि (₹) — वैकल्पिक",
     depositLabel: "सिक्योरिटी डिपॉज़िट (₹) — वैकल्पिक",
     moveInLabel: "मूव-इन तिथि", leaseLabel: "लीज़ अवधि (महीने) — वैकल्पिक", leasePh: "जैसे: 12",
@@ -658,6 +773,29 @@ const I18N = {
     roomLabel: "ঘরের নম্বর",
     roomPh: "যেমন: 102",
     rentLabel: "মাসিক ভাড়া (₹)",
+     landlordTitle: "🏠 ঘরমালিকের তথ্য",
+     landlordName: "নাম: Nitai Mondal",
+     landlordAddress: "ঠিকানা: Baikunthu Pally, ITI Road, Near Bottle Company More, Siliguri, Jalpaiguri, West Bengal, India - 734001",
+     aadhaarFrontLabel: "KYC / Aadhaar সামনের ছবি",
+     aadhaarBackLabel: "KYC / Aadhaar পিছনের ছবি",
+     aadhaarFrontBtn: "📄 সামনের ছবি বাছাই করুন",
+     aadhaarBackBtn: "📄 পিছনের ছবি বাছাই করুন",
+     kycPhotoHint: "সামনের ও পিছনের ছবি আবশ্যক। শুধু JPG/PNG।",
+     rentDueDateLabel: "ভাড়া দেওয়ার শেষ তারিখ",
+     waterChargesLabel: "জলের চার্জ (₹)",
+     electricityChargesLabel: "বিদ্যুৎ চার্জ (₹)",
+     lateFeeLabel: "বিলম্ব ফি (₹)",
+     paymentStatusLabel: "পেমেন্টের অবস্থা",
+     paymentPending: "বকেয়া",
+     paymentPaid: "পরিশোধিত",
+     paymentPartial: "আংশিক পরিশোধিত",
+     paymentOverdue: "মেয়াদোত্তীর্ণ বকেয়া",
+     rentNotesLabel: "ভাড়া সংক্রান্ত নোট",
+     rentNotesPh: "ভাড়া/পেমেন্ট সংক্রান্ত কোনো নোট",
+     errKycFront: "KYC সামনের ছবি আবশ্যক",
+     errKycBack: "KYC পিছনের ছবি আবশ্যক",
+     errRentDueDate: "ভাড়া দেওয়ার শেষ তারিখ বাছাই করুন",
+ 
     rentPh: "যেমন: 5000",
     advanceLabel: "অগ্রিম (₹) — চ্ছিক",
     depositLabel: "নিরাপত্তা জামানত (₹) — ঐচ্ছিক",
@@ -784,21 +922,21 @@ const I18N = {
     clearConfirm: "যা পূরণ করেছেন সব মুছে যাবে। চালিয়ে যাবেন?",
   }
 };
-
+ 
 let currentLang = 'en';
 try { currentLang = localStorage.getItem('rr_lang') || 'en'; } catch(e) {}
 if (!I18N[currentLang]) currentLang = 'en';
 const t = () => I18N[currentLang];
-
-const IMG_FIELDS = ['selfie', 'aadhaarPhoto', 'profId'];
+ 
+const IMG_FIELDS = ['selfie', 'aadhaarFront', 'aadhaarBack', 'profId'];
 const imgData = {};   // id -> base64 data url
 const fileName = {};  // id -> original file name
 let dirty = false;
 let busy = false;
 let toastTimer = null;
-
+ 
 function $(id) { return document.getElementById(id); }
-
+ 
 /* ---------- language switching ---------- */
 function applyLang(lang) {
   if (!I18N[lang]) lang = 'en';
@@ -806,7 +944,7 @@ function applyLang(lang) {
   const dict = I18N[lang];
   document.documentElement.lang = lang;
   document.title = dict.docTitle;
-
+ 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n');
     if (k === 'submitBtn' && busy) return;   // save hotu thakle button text badlano
@@ -828,11 +966,11 @@ function applyLang(lang) {
   updateDynamic();
   try { localStorage.setItem('rr_lang', lang); } catch(e) {}
 }
-
+ 
 document.querySelectorAll('.lang-btn').forEach(b => {
   b.addEventListener('click', () => applyLang(b.dataset.lang));
 });
-
+ 
 /* ---------- small helpers ---------- */
 function fileToDataUrl(file) {
   return new Promise(res => {
@@ -842,7 +980,7 @@ function fileToDataUrl(file) {
     r.readAsDataURL(file);
   });
 }
-
+ 
 /* photo compress kore base64 data-url banai (file choto thakte help kore) */
 function compressImage(file, maxDim, quality) {
   return new Promise(res => {
@@ -888,7 +1026,7 @@ function compressImage(file, maxDim, quality) {
     } catch (e) { fileToDataUrl(file).then(res); }
   });
 }
-
+ 
 function updatePreview(id) {
   const row = $('row-' + id);
   const img = $('img-' + id);
@@ -901,7 +1039,7 @@ function updatePreview(id) {
     row.classList.remove('show');
   }
 }
-
+ 
 function showErr(msg) {
   const el = $('toast');
   el.textContent = '⚠️ ' + msg;
@@ -910,7 +1048,7 @@ function showErr(msg) {
   toastTimer = setTimeout(() => el.style.display = 'none', 9000);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
+ 
 /* ---------- photo inputs ---------- */
 IMG_FIELDS.forEach(id => {
   const inp = $(id);
@@ -927,7 +1065,7 @@ IMG_FIELDS.forEach(id => {
     dirty = true;
   });
 });
-
+ 
 document.querySelectorAll('.btn-x').forEach(b => {
   b.addEventListener('click', () => {
     const id = b.dataset.clear;
@@ -936,7 +1074,7 @@ document.querySelectorAll('.btn-x').forEach(b => {
     updatePreview(id);
   });
 });
-
+ 
 /* ---------- input cleanup ---------- */
 [['mobile',10],['gMobile',10],['eMobile',10],['aadhaar',12]].forEach(pair => {
   const id = pair[0], len = pair[1];
@@ -947,7 +1085,7 @@ document.querySelectorAll('.btn-x').forEach(b => {
 $('pan').addEventListener('input', e => {
   e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
 });
-
+ 
 /* ---------- occupation dropdown: dynamic field/label/tag change ----------
    Student  -> Profession ID Card Photo required, PAN & Voter optional
    Otherwise-> PAN & Voter ID required, Profession ID optional          */
@@ -959,14 +1097,14 @@ const ORG_LABELS = {
   self_employed: 'orgBusiness',
   other: 'orgOther'
 };
-
+ 
 function setReqTag(fieldId, required) {
   const tag = $('tag-' + fieldId);
   const req = $('req-' + fieldId);
   if (tag) { tag.style.display = required ? 'none' : ''; tag.textContent = t().optTag; }
   if (req) req.style.display = required ? '' : 'none';
 }
-
+ 
 function updateDynamic() {
   const occ = $('occupation').value;
   /* org field/label */
@@ -984,19 +1122,19 @@ function updateDynamic() {
   setReqTag('profId', isStudent);
   $('kycSub').textContent = t()[isStudent ? 'kycSubStudent' : 'kycSubOther'];
 }
-
+ 
 $('occupation').addEventListener('change', updateDynamic);
-
+ 
 /* dob future date thakte parbe na */
 $('dob').max = new Date().toISOString().slice(0,10);
-
+ 
 /* ---------- co-occupants (room e 1 er beshi jon thakle) ---------- */
 const coPhotoData = {};
-
+ 
 /* last successful submission — PDF generate er jonno */
 let lastRegId = '';
 let lastPayload = null;
-
+ 
 function buildCoOccCard(i) {
   const div = document.createElement('div');
   div.className = 'card';
@@ -1042,7 +1180,7 @@ function buildCoOccCard(i) {
     '</div>';
   return div;
 }
-
+ 
 function renderCoOcc() {
   const n = parseInt($('occupants').value, 10) || 1;
   const wrap = $('coOccWrap');
@@ -1053,13 +1191,13 @@ function renderCoOcc() {
     if (d) d.max = new Date().toISOString().slice(0, 10);
   }
 }
-
+ 
 $('occupants').addEventListener('change', () => {
   renderCoOcc();
   applyLang(currentLang);
   dirty = true;
 });
-
+ 
 /* delegated listeners — dynamically generated co-occupant cards er jonno */
 $('coOccWrap').addEventListener('change', async e => {
   const m = /^co-photo-(\d+)$/.exec(e.target.id || '');
@@ -1075,7 +1213,7 @@ $('coOccWrap').addEventListener('change', async e => {
   row.classList.add('show');
   dirty = true;
 });
-
+ 
 $('coOccWrap').addEventListener('click', e => {
   const b = e.target.closest ? e.target.closest('.btn-x') : null;
   if (b && b.dataset.clearCo) {
@@ -1085,13 +1223,13 @@ $('coOccWrap').addEventListener('click', e => {
     $('row-co-photo-' + i).classList.remove('show');
   }
 });
-
+ 
 $('coOccWrap').addEventListener('input', e => {
   const id = e.target.id || '';
   if (/^co-mobile-\d+$/.test(id)) e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
   if (/^co-aadhaar-\d+$/.test(id)) e.target.value = e.target.value.replace(/\D/g, '').slice(0, 12);
 });
-
+ 
 /* ---------- validation ---------- */
 function setErr(el, key) {
   el.closest('.field').classList.add('error');
@@ -1100,13 +1238,13 @@ function setErr(el, key) {
   const em = f.querySelector('.err-msg');
   if (em) em.textContent = t()[key];
 }
-
+ 
 function validate() {
   let ok = true;
   document.querySelectorAll('.field.error').forEach(f => { f.classList.remove('error'); delete f.dataset.errKey; });
   const setFieldErr = (id, key) => { setErr($(id), key); ok = false; };
   const v = id => ($(id).value || '').trim();
-
+ 
   if (!v('name')) setFieldErr('name', 'errName');
   if (!v('fatherName')) setFieldErr('fatherName', 'errFather');
   if (!v('dob')) setFieldErr('dob', 'errDob');
@@ -1124,10 +1262,13 @@ function validate() {
     if (!/^[A-Z]{5}\d{4}[A-Z]$/.test(v('pan'))) setFieldErr('pan', 'errPan');
     if (!v('voterId')) setFieldErr('voterId', 'errVoter');
   }
+  if (!imgData.aadhaarFront) { setErr($('aadhaarFront'), 'errKycFront'); ok = false; }
+  if (!imgData.aadhaarBack) { setErr($('aadhaarBack'), 'errKycBack'); ok = false; }
   if (!imgData.selfie) { setErr($('field-selfie'), 'errSelfie'); ok = false; }
   if (!v('room')) setFieldErr('room', 'errRoom');
   if (!v('rent')) setFieldErr('rent', 'errRent');
   if (!v('moveIn')) setFieldErr('moveIn', 'errMoveIn');
+  if (!v('rentDueDate')) setFieldErr('rentDueDate', 'errRentDueDate');
   if (!v('gName')) setFieldErr('gName', 'errGName');
   if (!/^[6-9]\d{9}$/.test(v('gMobile'))) setFieldErr('gMobile', 'errGMobile');
   if (!v('eName')) setFieldErr('eName', 'errEName');
@@ -1150,22 +1291,22 @@ function validate() {
     }
     if (coBad) ok = false;
   }
-
+ 
   if (!$('consent').checked) { setErr($('field-consent'), 'errConsent'); ok = false; }
-
+ 
   const firstErr = document.querySelector('.field.error');
   if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
   return ok;
 }
-
+ 
 /* ---------- submit ---------- */
 $('tenantForm').addEventListener('input', () => dirty = true);
 $('tenantForm').addEventListener('change', () => dirty = true);
-
+ 
 window.addEventListener('beforeunload', e => {
   if (dirty) { e.preventDefault(); e.returnValue = ''; }
 });
-
+ 
 $('tenantForm').addEventListener('submit', e => {
   e.preventDefault();
   if (!validate()) return;
@@ -1174,7 +1315,7 @@ $('tenantForm').addEventListener('submit', e => {
   btn.disabled = true;
   btn.textContent = t().saving;
   const g = id => ($(id).value || '').trim();
-
+ 
   const occN = parseInt(g('occupants'), 10) || 1;
   const coArr = [];
   for (let i = 2; i <= occN; i++) {
@@ -1189,23 +1330,23 @@ $('tenantForm').addEventListener('submit', e => {
       photo: coPhotoData[i] || ''
     });
   }
-
+ 
   const payload = {
     name: g('name'), fatherName: g('fatherName'), dob: g('dob'),
     mobile: g('mobile'), email: g('email'),
     address: g('address'), permAddress: g('permAddress'),
     occupation: g('occupation'), orgName: g('orgName'),
     aadhaar: g('aadhaar'), pan: g('pan'), voterId: g('voterId'), otherId: g('otherId'),
-    selfie: imgData.selfie || '', aadhaarPhoto: imgData.aadhaarPhoto || '', profId: imgData.profId || '',
+    selfie: imgData.selfie || '', aadhaarFront: imgData.aadhaarFront || '', aadhaarBack: imgData.aadhaarBack || '', profId: imgData.profId || '',
     room: g('room'), rent: g('rent'), advance: g('advance'), deposit: g('deposit'),
-    moveIn: g('moveIn'), leaseMonths: g('leaseMonths'),
+    moveIn: g('moveIn'), leaseMonths: g('leaseMonths'), rentDueDate: g('rentDueDate'), waterCharges: g('waterCharges'), electricityCharges: g('electricityCharges'), lateFee: g('lateFee'), paymentStatus: g('paymentStatus'), rentNotes: g('rentNotes'),
     occupants: occN, coOccupants: coArr,
     gName: g('gName'), gMobile: g('gMobile'), gAddress: g('gAddress'), gRelation: g('gRelation'),
     eName: g('eName'), eMobile: g('eMobile'), eRelation: g('eRelation'),
     consent: $('consent').checked ? 'yes' : 'no',
     acknowledgement: $('consent').checked ? 'yes' : 'no'
   };
-
+ 
   /* text/plain body = "simple request", tai kono browser block kore na */
   const finish = () => { busy = false; btn.disabled = false; btn.textContent = t().submitBtn; };
   const done = res => {
@@ -1223,11 +1364,11 @@ $('tenantForm').addEventListener('submit', e => {
     finish();
   };
   const fail = err => { showErr(t().networkErr + err + ')'); finish(); };
-
+ 
   const endpointOk = FORM_ENDPOINT &&
                      FORM_ENDPOINT.indexOf('PASTE_') !== 0 &&
                      FORM_ENDPOINT.indexOf('{{') === -1;
-
+ 
   if (endpointOk) {
     /* Direct POST to web app URL */
     fetch(FORM_ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
@@ -1250,7 +1391,7 @@ $('tenantForm').addEventListener('submit', e => {
     return;
   }
 });
-
+ 
 function showSuccess(regId) {
   $('tenantForm').style.display = 'none';
   $('successCard').style.display = 'block';
@@ -1267,12 +1408,12 @@ function showSuccess(regId) {
   dirty = false;
   window.scrollTo({ top: 0 });
 }
-
+ 
 /* ---------- PDF (print window) — full details + photos + house rules + legal acknowledgement ---------- */
 function escHtml(v) {
   return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-
+ 
 function buildPdfHtml() {
   const d = lastPayload || {};
   const dict = t();
@@ -1282,15 +1423,15 @@ function buildPdfHtml() {
     const k = 'rel' + String(r || '').replace(/^./, x => x.toUpperCase());
     return dict[k] || r || '';
   };
-
+ 
   const kv = (label, val) => (val === 0 || val ? '<tr><td class="k">' + escHtml(label) + '</td><td>' + escHtml(val) + '</td></tr>' : '');
-
+ 
   /* photos (already watermarked with upload time) */
   const photoFigs = [];
-  [['selfie', dict.selfieLabel], ['aadhaarPhoto', dict.aadhaarPhotoLabel], ['profId', dict.profIdLabel]].forEach(pair => {
+  [['selfie', dict.selfieLabel], ['aadhaarFront', dict.aadhaarFrontLabel], ['aadhaarBack', dict.aadhaarBackLabel], ['profId', dict.profIdLabel]].forEach(pair => {
     if (imgData[pair[0]]) photoFigs.push('<figure><img src="' + imgData[pair[0]] + '"><figcaption>' + escHtml(pair[1]) + '</figcaption></figure>');
   });
-
+ 
   /* co-occupants */
   const coList = d.coOccupants || [];
   let coHtml = '';
@@ -1305,10 +1446,10 @@ function buildPdfHtml() {
       '<table class="co"><tr><th>#</th><th>' + escHtml(dict.coNameLabel) + '</th><th>' + escHtml(dict.coFatherLabel) + '</th><th>' + escHtml(dict.coDobLabel) + '</th><th>' + escHtml(dict.coMobileLabel) + '</th><th>' + escHtml(dict.coAadhaarLabel) + '</th><th>' + escHtml(dict.coRelationLabel) + '</th></tr>' + rows + '</table>' +
       (coPhotos ? '<div class="photos">' + coPhotos + '</div>' : '');
   }
-
+ 
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-
+ 
   return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>' + escHtml(dict.docTitle) + (lastRegId ? ' — ' + escHtml(lastRegId) : '') + '</title><style>' +
     '@page { size:A4; margin:13mm; }' +
     'body { font-family:Arial,"Noto Sans","Noto Sans Bengali","Noto Sans Devanagari",sans-serif; color:#111; font-size:12.5px; line-height:1.55; margin:0; }' +
@@ -1335,84 +1476,67 @@ function buildPdfHtml() {
     '</style></head><body>' +
     '<div class="hd"><h1>' + escHtml(dict.headerTitle) + '</h1><div class="sub">' + escHtml(dict.headerSub) + ' — ' + escHtml(dateStr) + '</div>' +
     (lastRegId ? '<div class="reg">' + escHtml(dict.regIdPrefix) + ': ' + escHtml(lastRegId) + '</div>' : '') + '</div>' +
-
+ 
     '<h2>1. ' + escHtml(dict.sec1) + '</h2><table class="kv">' +
     kv(dict.nameLabel, d.name) + kv(dict.fatherLabel, d.fatherName) + kv(dict.dobLabel, d.dob) + kv(dict.mobileLabel, d.mobile) +
     kv(dict.emailLabel, d.email) + kv(dict.addressLabel, d.address) + kv(dict.permLabel, d.permAddress) +
     '</table>' +
-
+ 
     '<h2>' + escHtml(dict.occupationLabel) + '</h2><table class="kv">' +
     kv(dict.occupationLabel, dict['occ' + occ.replace(/^./, x => x.toUpperCase())] || occ) +
     kv(orgLabel, d.orgName) +
     '</table>' +
-
+ 
     '<h2>' + escHtml(dict.sec2) + '</h2><table class="kv">' +
     kv(dict.aadhaarLabel, d.aadhaar) + kv(dict.panLabel, d.pan) + kv(dict.voterLabel, d.voterId) + kv(dict.otherIdLabel, d.otherId) +
     '</table>' + (photoFigs.length ? '<div class="photos">' + photoFigs.join('') + '</div>' : '') +
-
+ 
     '<h2>' + escHtml(dict.sec4) + '</h2><table class="kv">' +
     kv(dict.roomLabel, d.room) + kv(dict.rentLabel, d.rent) + kv(dict.advanceLabel, d.advance) + kv(dict.depositLabel, d.deposit) +
-    kv(dict.moveInLabel, d.moveIn) + kv(dict.leaseLabel, d.leaseMonths) + kv(dict.occRoomLabel, d.occupants) +
+    kv(dict.moveInLabel, d.moveIn) + kv(dict.leaseLabel, d.leaseMonths) + kv(dict.rentDueDateLabel, d.rentDueDate) + kv(dict.waterChargesLabel, d.waterCharges) + kv(dict.electricityChargesLabel, d.electricityCharges) + kv(dict.lateFeeLabel, d.lateFee) + kv(dict.paymentStatusLabel, dict['payment' + String(d.paymentStatus || '').replace(/^./, x => x.toUpperCase())] || d.paymentStatus) + kv(dict.rentNotesLabel, d.rentNotes) + kv(dict.occRoomLabel, d.occupants) +
     '</table>' + coHtml +
-
+ 
     '<h2>' + escHtml(dict.sec5) + '</h2><table class="kv">' +
     kv(dict.gNameLabel, d.gName) + kv(dict.gMobileLabel, d.gMobile) + kv(dict.gAddressLabel, d.gAddress) + kv(dict.gRelationLabel, d.gRelation) +
     '</table>' +
-
+ 
     '<h2>' + escHtml(dict.sec6) + '</h2><table class="kv">' +
     kv(dict.eNameLabel, d.eName) + kv(dict.eMobileLabel, d.eMobile) + kv(dict.eRelationLabel, relName(d.eRelation)) +
     '</table>' +
-
+ 
     '<h2>' + escHtml(dict.houseRulesTitle) + '</h2><div class="pre">' + escHtml(dict.houseRules) + '</div>' +
-
+ 
     '<h2>' + escHtml(dict.legalTitle) + '</h2><div class="pre">' + escHtml(dict.legalText) + '</div>' +
-
+ 
     '<div class="sig"><div><div class="line">' + escHtml(dict.sigTenant) + '</div></div><div><div class="line">' + escHtml(dict.sigLandlord) + '</div></div></div>' +
-
+ 
     '<div class="ft">' + escHtml(dict.footer1) + ' — ' + escHtml(dateStr) + '</div>' +
     '</body></html>';
 }
-
+ 
 $('pdfBtn').addEventListener('click', () => {
   const w = window.open('', '_blank');
   if (!w) { showErr(t().popupBlock); return; }
-  w.document.open();
-  w.document.write(buildPdfHtml());
-  w.document.close();
-  w.focus();
+  w.document.open(); w.document.write(buildPdfHtml()); w.document.close(); w.focus();
   setTimeout(() => { try { w.print(); } catch (e) {} }, 700);
 });
-
+ 
 function resetAll() {
   $('tenantForm').reset();
   IMG_FIELDS.forEach(id => { delete imgData[id]; delete fileName[id]; updatePreview(id); });
-  $('occupants').value = '1';
-  renderCoOcc();
+  $('occupants').value = '1'; renderCoOcc();
   Object.keys(coPhotoData).forEach(k => delete coPhotoData[k]);
   document.querySelectorAll('.field.error').forEach(f => { f.classList.remove('error'); delete f.dataset.errKey; });
   dirty = false;
 }
-
+ 
 $('againBtn').addEventListener('click', () => {
-  resetAll();
-  $('successCard').style.display = 'none';
-  $('tenantForm').style.display = 'block';
-  window.scrollTo({ top: 0 });
+  resetAll(); $('successCard').style.display = 'none'; $('tenantForm').style.display = 'block'; window.scrollTo({ top: 0 });
 });
-
-$('clearBtn').addEventListener('click', () => {
-  if (!confirm(t().clearConfirm)) return;
-  resetAll();
-});
-
-/* ---------- init ---------- */
+$('clearBtn').addEventListener('click', () => { if (confirm(t().clearConfirm)) resetAll(); });
 renderCoOcc();
-applyLang(currentLang);
-</script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3deccd2ee132a99',t:'MTc4OTg4NjAyMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
--- init ---------- */
 applyLang(currentLang);
 </script>
 </body>
 </html>
+ 
